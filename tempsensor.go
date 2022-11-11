@@ -83,13 +83,11 @@ func (c *Converter) ConvertDeviceMessages2MQFormat(messages []string, convertedD
 		c.logger.Info("Unmarshal convertedDeviceFeatureMap error: %s\n", err.Error())
 		return "", nil, err
 	}
-	//c.logger.Info("map: %s\n", convertedDeviceFeatureMap)
 	for _, msg := range messages {
 		var featureType, deviceModelId, deviceId, featureId string
 		c.logger.Info("msg error: %s\n", string(msg))
 		data := Data{}
 		if err := json.Unmarshal([]byte(msg), &data); err != nil {
-			c.logger.Info("Unmarshal msg error: %s\n", err.Error())
 			return "", nil, err
 		}
 		for _, v := range convertedDeviceFeatureMap.DeviceIdMap {
@@ -98,10 +96,7 @@ func (c *Converter) ConvertDeviceMessages2MQFormat(messages []string, convertedD
 				deviceId = v.DeviceId
 			}
 		}
-		c.logger.Info("feature:%s", convertedDeviceFeatureMap.FeatureIdMap)
 		for _, v := range convertedDeviceFeatureMap.FeatureIdMap {
-			c.logger.Info("Param:%s", v.CustomFeatureId)
-			c.logger.Info("Param:%s", data.Type)
 			if v.CustomFeatureId == data.Type && v.FeatureType == "property" {
 				featureType = "property"
 				featureId = v.FeatureId
@@ -111,12 +106,7 @@ func (c *Converter) ConvertDeviceMessages2MQFormat(messages []string, convertedD
 				featureId = v.FeatureId
 			}
 		}
-		c.logger.Info("Params:%s", featureType)
-		c.logger.Info("Params:%s", deviceModelId)
-		c.logger.Info("Params:%s", deviceId)
-		c.logger.Info("Params:%s", featureId)
 		if featureType == "" || deviceModelId == "" || deviceId == "" || featureId == "" {
-			c.logger.Info("Params is nil")
 			return "", nil, fmt.Errorf("Params is nil")
 		}
 		if featureType == "property" {
